@@ -1,0 +1,154 @@
+from datetime import datetime
+
+class Patient:
+    def __init__(self, name, email, phone):
+        self.name = name
+        self.email = email
+        self.phone = phone
+        self.appointments = []
+
+    def schedule_appointment(self, appointment):
+        self.appointments.append(appointment)
+        print(f"Appointment scheduled for {self.name} on {appointment.date} at {appointment.time}.")
+
+    def view_appointments(self):
+        print(f"Appointments for {self.name}:")
+        for appointment in self.appointments:
+            print(f"Date: {appointment.date}, Time: {appointment.time}, Therapist: {appointment.therapist.name}")
+    def delete_appointment(self, appointment_date, appointment_time):
+        appointment = next((a for a in self.appointments if a.date == appointment_date and a.time == appointment_time), None)
+        if appointment:
+            self.appointments.remove(appointment)
+            print(f"Appointment on {appointment_date} at {appointment_time} deleted.")
+        else:
+            print("Appointment not found.")
+
+class Therapist:
+    def __init__(self, name, specialty):
+        self.name = name
+        self.specialty = specialty
+        self.appointments = []
+
+    def schedule_appointment(self, appointment):
+        self.appointments.append(appointment)
+        print(f"Appointment scheduled with {self.name} on {appointment.date} at {appointment.time}.")
+
+    def view_appointments(self):
+        print(f"Appointments for {self.name}:")
+        for appointment in self.appointments:
+            print(f"Date: {appointment.date}, Time: {appointment.time}, Patient: {appointment.patient.name}")
+    def delete_appointment(self, appointment_date, appointment_time):
+        appointment = next((a for a in self.appointments if a.date == appointment_date and a.time == appointment_time), None)
+        if appointment:
+            self.appointments.remove(appointment)
+            print(f"Appointment on {appointment_date} at {appointment_time} deleted.")
+        else:
+            print("Appointment not found.")
+class Appointment:
+    def __init__(self, patient, therapist, date, time):
+        self.patient = patient
+        self.therapist = therapist
+        self.date = date
+        self.time = time
+
+    def __str__(self):
+        return f"Date: {self.date}, Time: {self.time}, Patient: {self.patient.name}, Therapist: {self.therapist.name}"
+
+class PhysicalTherapySchedulingSystem:
+    def __init__(self):
+        self.patients = []
+        self.therapists = []
+        self.appointments = []
+
+    def add_patient(self):
+        name = input("Enter patient's name: ")
+        email = input("Enter patient's email: ")
+        phone = input("Enter patient's phone: ")
+        patient = Patient(name, email, phone)
+        self.patients.append(patient)
+        print(f"Patient {name} added successfully.")
+
+    def add_therapist(self):
+        name = input("Enter therapist's name: ")
+        specialty = input("Enter therapist's specialty: ")
+        therapist = Therapist(name, specialty)
+        self.therapists.append(therapist)
+        print(f"Therapist {name} added successfully.")
+
+    def schedule_appointment(self):
+        patient_name = input("Enter patient's name: ")
+        therapist_name = input("Enter therapist's name: ")
+        date = input("Enter appointment date (YYYY-MM-DD): ")
+        time = input("Enter appointment time (HH:MM AM/PM): ")
+
+        patient = next((p for p in self.patients if p.name == patient_name), None)
+        therapist = next((t for t in self.therapists if t.name == therapist_name), None)
+
+        if patient and therapist:
+            appointment = Appointment(patient, therapist, date, time)
+            patient.schedule_appointment(appointment)
+            therapist.schedule_appointment(appointment)
+            self.appointments.append(appointment)
+        else:
+            print("Patient or therapist not found.")
+    def delete_appointment(self):
+        patient_name = input("Enter patient's name: ")
+        appointment_date = input("Enter appointment date (YYYY-MM-DD): ")
+        appointment_time = input("Enter appointment time (HH:MM AM/PM): ")
+
+        patient = next((p for p in self.patients if p.name == patient_name), None)
+        if patient:
+            patient.delete_appointment(appointment_date, appointment_time)
+        else:
+            print("Patient not found.")
+    def view_patient_appointments(self):
+        patient_name = input("Enter patient's name: ")
+        patient = next((p for p in self.patients if p.name == patient_name), None)
+        if patient:
+            patient.view_appointments()
+        else:
+            print("Patient not found.")
+
+    def view_therapist_appointments(self):
+        therapist_name = input("Enter therapist's name: ")
+        therapist = next((t for t in self.therapists if t.name == therapist_name), None)
+        if therapist:
+            therapist.view_appointments()
+        else:
+            print("Therapist not found.")
+
+    def start(self):
+        while True:
+            print("\nPhysical Therapy Scheduling System")
+            print("1. Add Patient")
+            print("2. Add Therapist")
+            print("3. Schedule Appointment")
+            print("4. View Patient Appointments")
+            print("5. View Therapist Appointments")
+            print("6. Cancel appointment")
+            print("7. Exit")
+            choice = input("Enter your choice: ")
+
+            if choice == "1":
+                self.add_patient()
+            elif choice == "2":
+                self.add_therapist()
+            elif choice == "3":
+                self.schedule_appointment()
+            elif choice == "4":
+                self.view_patient_appointments()
+            elif choice == "5":
+                self.view_therapist_appointments()
+            elif choice == "6":
+                self.delete_appointments()
+            elif choice == "7":
+                print("Exiting the system. Goodbye!")
+                break
+            else:
+                print("Invalid choice. Please choose a valid option.")
+
+if __name__ == "__main__":
+    system=PhysicalTherapySchedulingSystem()
+    system.start()
+
+
